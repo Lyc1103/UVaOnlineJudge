@@ -103,7 +103,7 @@ _Bool **findDominator(_Bool **mat, int matSize)
 		for (j = 0; j < matSize; j++)
 			if (init_visited[j] && !is_visited[j])
 				ret[i][j] = 1;
-		ret[i][i] = is_visited[i];
+		ret[i][i] = is_visited[i]; // Don't understand the reason for it.
 	}
 
 	/* printMatrix_Bool(ret, matSize, matSize); */
