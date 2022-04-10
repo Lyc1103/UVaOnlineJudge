@@ -358,7 +358,7 @@ int sendingEmail(Graph *graph, int source_index, int terminal_index)
 
 int main()
 {
-
+	/*
 	FILE *pfile_r, *pfile_w;
 	if ((pfile_r = fopen("10986.txt", "r")) == NULL)
 	{
@@ -370,6 +370,7 @@ int main()
 		puts("Write file could not be opened!");
 		return 0;
 	}
+	*/
 
 	int i, j, k;
 	char c;
