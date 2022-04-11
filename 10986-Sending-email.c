@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define OO 1000000001
+
 /* -------------------- */
 /* Definition for Node. */
 /* -------------------- */
@@ -18,7 +20,7 @@ struct Node *createNewNode(int size, int index)
 {
 	struct Node *newNode = (struct Node *)malloc(sizeof(struct Node));
 	newNode->index = index;
-	newNode->costFromStartNode = INT_MAX;
+	newNode->costFromStartNode = OO;
 	newNode->adjNodesSize = -1;
 	newNode->adjNodeWeights = (int *)malloc(size * sizeof(int));
 	newNode->adjNode = (struct Node **)malloc(size * sizeof(struct Node *));
@@ -103,6 +105,9 @@ Graph *createGraph(int nodesNum, Edge **edges, int edgesNum)
 
 void freeGraph(Graph *graph)
 {
+	int i;
+	for (i = 0; i < graph->nodesSize; i++)
+		free(graph->nodes[i]);
 	free(graph->nodes);
 	free(graph);
 	return;
@@ -122,14 +127,14 @@ MinHeap *createMinHeap(int size)
 {
 	MinHeap *minheap = (MinHeap *)malloc(sizeof(MinHeap));
 	minheap->last_index = 0;
-	minheap->positions = (int *)malloc(size * sizeof(int));
+	minheap->positions = (int *)malloc((size + 1) * sizeof(int));
 	minheap->nodes = (struct Node **)malloc((size + 1) * sizeof(struct Node *));
 	return minheap;
 }
 
 _Bool isEmptyMinHeap(MinHeap *minheap)
 {
-	return minheap->last_index == 0 ? 1 : 0;
+	return minheap->last_index <= 0 ? 1 : 0;
 }
 
 void pushToMinHeap(MinHeap *minheap, struct Node *node)
@@ -220,24 +225,45 @@ void bottomUpBuildMinHeap(MinHeap *minheap)
 	for (i = last_pos / 2; i > 0; i--)
 	{
 		int pos = i;
-		int lchild_pos = i * 2;
-		int rchild_pos = i * 2 + 1;
-		if (rchild_pos <= last_pos)
+		while (pos <= last_pos)
 		{
-			if (minheap->nodes[lchild_pos]->costFromStartNode > minheap->nodes[rchild_pos]->costFromStartNode)
+
+			int lchild_pos = pos * 2;
+			int rchild_pos = pos * 2 + 1;
+			if (rchild_pos <= last_pos)
 			{
-				if (minheap->nodes[pos]->costFromStartNode > minheap->nodes[rchild_pos]->costFromStartNode)
+				if (minheap->nodes[lchild_pos]->costFromStartNode > minheap->nodes[rchild_pos]->costFromStartNode)
 				{
-					/* printf("(index = %d, pos = %d)<-swap->(index = %d, pos = %d)\n", minheap->nodes[pos]->index, minheap->positions[minheap->nodes[pos]->index], minheap->nodes[rchild_pos]->index, minheap->positions[minheap->nodes[rchild_pos]->index]); */
-					swap(&(minheap->nodes[pos]), &(minheap->nodes[rchild_pos]));
-					minheap->positions[minheap->nodes[pos]->index] = pos;
-					minheap->positions[minheap->nodes[rchild_pos]->index] = rchild_pos;
-					/* printf("(index = %d, pos = %d)<------>(index = %d, pos = %d)\n\n", minheap->nodes[pos]->index, minheap->positions[minheap->nodes[pos]->index], minheap->nodes[rchild_pos]->index, minheap->positions[minheap->nodes[rchild_pos]->index]); */
-					pos = rchild_pos;
+					if (minheap->nodes[pos]->costFromStartNode > minheap->nodes[rchild_pos]->costFromStartNode)
+					{
+						/* printf("(index = %d, pos = %d)<-swap->(index = %d, pos = %d)\n", minheap->nodes[pos]->index, minheap->positions[minheap->nodes[pos]->index], minheap->nodes[rchild_pos]->index, minheap->positions[minheap->nodes[rchild_pos]->index]); */
+						swap(&(minheap->nodes[pos]), &(minheap->nodes[rchild_pos]));
+						minheap->positions[minheap->nodes[pos]->index] = pos;
+						minheap->positions[minheap->nodes[rchild_pos]->index] = rchild_pos;
+						/* printf("(index = %d, pos = %d)<------>(index = %d, pos = %d)\n\n", minheap->nodes[pos]->index, minheap->positions[minheap->nodes[pos]->index], minheap->nodes[rchild_pos]->index, minheap->positions[minheap->nodes[rchild_pos]->index]); */
+						pos = rchild_pos;
+					}
+					else
+						break;
+				}
+				else
+				{
+					if (minheap->nodes[pos]->costFromStartNode > minheap->nodes[lchild_pos]->costFromStartNode)
+					{
+						/* printf("(index = %d, pos = %d)<-swap->(index = %d, pos = %d)\n", minheap->nodes[pos]->index, minheap->positions[minheap->nodes[pos]->index], minheap->nodes[lchild_pos]->index, minheap->positions[minheap->nodes[lchild_pos]->index]); */
+						swap(&(minheap->nodes[pos]), &(minheap->nodes[lchild_pos]));
+						minheap->positions[minheap->nodes[pos]->index] = pos;
+						minheap->positions[minheap->nodes[lchild_pos]->index] = lchild_pos;
+						/* printf("(index = %d, pos = %d)<------>(index = %d, pos = %d)\n\n", minheap->nodes[pos]->index, minheap->positions[minheap->nodes[pos]->index], minheap->nodes[lchild_pos]->index, minheap->positions[minheap->nodes[lchild_pos]->index]); */
+						pos = lchild_pos;
+					}
+					else
+						break;
 				}
 			}
-			else
+			else if (lchild_pos <= last_pos)
 			{
+
 				if (minheap->nodes[pos]->costFromStartNode > minheap->nodes[lchild_pos]->costFromStartNode)
 				{
 					/* printf("(index = %d, pos = %d)<-swap->(index = %d, pos = %d)\n", minheap->nodes[pos]->index, minheap->positions[minheap->nodes[pos]->index], minheap->nodes[lchild_pos]->index, minheap->positions[minheap->nodes[lchild_pos]->index]); */
@@ -247,20 +273,11 @@ void bottomUpBuildMinHeap(MinHeap *minheap)
 					/* printf("(index = %d, pos = %d)<------>(index = %d, pos = %d)\n\n", minheap->nodes[pos]->index, minheap->positions[minheap->nodes[pos]->index], minheap->nodes[lchild_pos]->index, minheap->positions[minheap->nodes[lchild_pos]->index]); */
 					pos = lchild_pos;
 				}
+				else
+					break;
 			}
-		}
-		else if (lchild_pos <= last_pos)
-		{
-
-			if (minheap->nodes[pos]->costFromStartNode > minheap->nodes[lchild_pos]->costFromStartNode)
-			{
-				/* printf("(index = %d, pos = %d)<-swap->(index = %d, pos = %d)\n", minheap->nodes[pos]->index, minheap->positions[minheap->nodes[pos]->index], minheap->nodes[lchild_pos]->index, minheap->positions[minheap->nodes[lchild_pos]->index]); */
-				swap(&(minheap->nodes[pos]), &(minheap->nodes[lchild_pos]));
-				minheap->positions[minheap->nodes[pos]->index] = pos;
-				minheap->positions[minheap->nodes[lchild_pos]->index] = lchild_pos;
-				/* printf("(index = %d, pos = %d)<------>(index = %d, pos = %d)\n\n", minheap->nodes[pos]->index, minheap->positions[minheap->nodes[pos]->index], minheap->nodes[lchild_pos]->index, minheap->positions[minheap->nodes[lchild_pos]->index]); */
-				pos = lchild_pos;
-			}
+			else
+				break;
 		}
 	}
 	return;
@@ -283,6 +300,7 @@ void printElementsInMinHeap(MinHeap *minheap)
 
 void freeMinHeap(MinHeap *minheap)
 {
+	free(minheap->positions);
 	free(minheap->nodes);
 	free(minheap);
 	return;
@@ -301,9 +319,12 @@ MinHeap *initialSingleSource(Graph *graph, int start_index)
 		if (graph->nodes[i] != NULL)
 			pushToMinHeap(minheap, graph->nodes[i]);
 
-	/* printElementsInMinHeap(minheap); */
+	/* printElementsInMinHeap(minheap); //*/
 	bottomUpBuildMinHeap(minheap);
-	/* printElementsInMinHeap(minheap); */
+	/*
+	printf("heapified ");
+	printElementsInMinHeap(minheap);
+	*/
 	return minheap;
 }
 
@@ -328,7 +349,10 @@ void relaxNodesCostFromStartNode(struct Node *src, struct Node *dst, int weight,
 		dst->costFromStartNode = src->costFromStartNode + weight;
 		/* printElementsInMinHeap(minheap); */
 		decreaseKeyInMinHeap(minheap, dst);
-		/* printElementsInMinHeap(minheap); */
+		/*
+		printf("decreased ");
+		printElementsInMinHeap(minheap);
+		*/
 	}
 	return;
 }
@@ -377,16 +401,16 @@ int main()
 	char c;
 	int N, n, m, S, T;
 	int index_x, index_y, cost;
-	/* fscanf(pfile_r, "%d", &N); */
+	/* fscanf(pfile_r, "%d", &N); //*/
 	scanf("%d", &N);
 	for (i = 1; i <= N; i++)
 	{
-		/* fscanf(pfile_r, "%d %d %d %d", &n, &m, &S, &T); */
+		/* fscanf(pfile_r, "%d %d %d %d", &n, &m, &S, &T); //*/
 		scanf("%d %d %d %d", &n, &m, &S, &T);
 		Edge **edges = createEdges(m);
 		for (j = 0; j < m; j++)
 		{
-			/* fscanf(pfile_r, "%d %d %d\n", &index_x, &index_y, &cost); */
+			/* fscanf(pfile_r, "%d %d %d\n", &index_x, &index_y, &cost); //*/
 			scanf("%d %d %d", &index_x, &index_y, &cost);
 			edges[j]->index1 = index_x;
 			edges[j]->index2 = index_y;
@@ -401,7 +425,7 @@ int main()
 		else
 		{
 			int send_cost = sendingEmail(graph, S, T);
-			if (send_cost == INT_MAX)
+			if (send_cost >= OO)
 			{
 				printf("Case #%d: unreachable\n", i);
 				/* fprintf(pfile_w, "Case #%d: unreachable\n", i); */
