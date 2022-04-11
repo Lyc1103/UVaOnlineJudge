@@ -3,15 +3,19 @@ p# UVaOnlineJudge
 > Author : Ya Chen <br>
 > Start Date : 2022 / 4 / 7
 
+> List : <br>
+>
+> > [Introduction](https://github.com/Lyc1103/UVaOnlineJudge#introduction) <br> [How To Execute](https://github.com/Lyc1103/UVaOnlineJudge#how-to-executive)
+
 ## Introduction
 
 Hi this is Ya Chen. Here are some problem-solving results about UVa Online Judge. Interested artificial visitors are welcome to watch and give advice.
 
 If it is helpful, you might as well press the stars in the upper right corner for collection, which gives me a lot of encouragement.
 
-## How To Executive
+## How To Execute
 
-## If you have the `make` commend :
+### If you have the `make` commend :
 
 If your device supports the `make` command, this will be much easier ( because my file name is very long... ).<br>
 You can type `make` in Terminal to see the output of all Python files directly.<br>
@@ -24,7 +28,7 @@ You can also type in :<br>
 
 <br>
 
-## If you <font color = "red">do not</font> have the `make` commend :
+### If you <font color = "red">do not</font> have the `make` commend :
 
 If your device <b><font color = "red">does not</font></b> supports the `make` command, there will be a little inconvenience ( because my file name is very long... ).<br>
 For instance, you can type in :<br>
