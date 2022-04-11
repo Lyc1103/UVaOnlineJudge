@@ -162,6 +162,7 @@ struct Node *extractMinFromMinHeap(MinHeap *minheap)
 
 	struct Node *ret = minheap->nodes[1];
 	minheap->nodes[1] = minheap->nodes[minheap->last_index];
+	minheap->positions[minheap->nodes[1]->index] = 1;
 	(minheap->last_index)--;
 	int pos, last_pos = minheap->last_index;
 	for (pos = 1; pos <= last_pos;)
