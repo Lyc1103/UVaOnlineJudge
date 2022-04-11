@@ -208,24 +208,44 @@ void bottomUpBuildMinHeap(MinHeap *minheap)
 	for (i = last_pos / 2; i > 0; i--)
 	{
 		int pos = i;
-		int lchild_pos = i * 2;
-		int rchild_pos = i * 2 + 1;
-		if (rchild_pos <= last_pos)
+		while (pos <= last_pos)
 		{
-			if (minheap->outposts[lchild_pos]->costOfOutpost > minheap->outposts[rchild_pos]->costOfOutpost)
+			int lchild_pos = pos * 2;
+			int rchild_pos = pos * 2 + 1;
+			if (rchild_pos <= last_pos)
 			{
-				if (minheap->outposts[pos]->costOfOutpost > minheap->outposts[rchild_pos]->costOfOutpost)
+				if (minheap->outposts[lchild_pos]->costOfOutpost > minheap->outposts[rchild_pos]->costOfOutpost)
 				{
-					/* printf("(index = %d, pos = %d)<-swap->(index = %d, pos = %d)\n", minheap->outposts[pos]->index, minheap->positions[minheap->outposts[pos]->index], minheap->outposts[rchild_pos]->index, minheap->positions[minheap->outposts[rchild_pos]->index]); */
-					swap(&(minheap->outposts[pos]), &(minheap->outposts[rchild_pos]));
-					minheap->positions[minheap->outposts[pos]->index] = pos;
-					minheap->positions[minheap->outposts[rchild_pos]->index] = rchild_pos;
-					/* printf("(index = %d, pos = %d)<------>(index = %d, pos = %d)\n\n", minheap->outposts[pos]->index, minheap->positions[minheap->outposts[pos]->index], minheap->outposts[rchild_pos]->index, minheap->positions[minheap->outposts[rchild_pos]->index]); */
-					pos = rchild_pos;
+					if (minheap->outposts[pos]->costOfOutpost > minheap->outposts[rchild_pos]->costOfOutpost)
+					{
+						/* printf("(index = %d, pos = %d)<-swap->(index = %d, pos = %d)\n", minheap->outposts[pos]->index, minheap->positions[minheap->outposts[pos]->index], minheap->outposts[rchild_pos]->index, minheap->positions[minheap->outposts[rchild_pos]->index]); */
+						swap(&(minheap->outposts[pos]), &(minheap->outposts[rchild_pos]));
+						minheap->positions[minheap->outposts[pos]->index] = pos;
+						minheap->positions[minheap->outposts[rchild_pos]->index] = rchild_pos;
+						/* printf("(index = %d, pos = %d)<------>(index = %d, pos = %d)\n\n", minheap->outposts[pos]->index, minheap->positions[minheap->outposts[pos]->index], minheap->outposts[rchild_pos]->index, minheap->positions[minheap->outposts[rchild_pos]->index]); */
+						pos = rchild_pos;
+					}
+					else
+						break;
+				}
+				else
+				{
+					if (minheap->outposts[pos]->costOfOutpost > minheap->outposts[lchild_pos]->costOfOutpost)
+					{
+						/* printf("(index = %d, pos = %d)<-swap->(index = %d, pos = %d)\n", minheap->outposts[pos]->index, minheap->positions[minheap->outposts[pos]->index], minheap->outposts[lchild_pos]->index, minheap->positions[minheap->outposts[lchild_pos]->index]); */
+						swap(&(minheap->outposts[pos]), &(minheap->outposts[lchild_pos]));
+						minheap->positions[minheap->outposts[pos]->index] = pos;
+						minheap->positions[minheap->outposts[lchild_pos]->index] = lchild_pos;
+						/* printf("(index = %d, pos = %d)<------>(index = %d, pos = %d)\n\n", minheap->outposts[pos]->index, minheap->positions[minheap->outposts[pos]->index], minheap->outposts[lchild_pos]->index, minheap->positions[minheap->outposts[lchild_pos]->index]); */
+						pos = lchild_pos;
+					}
+					else
+						break;
 				}
 			}
-			else
+			else if (lchild_pos <= last_pos)
 			{
+
 				if (minheap->outposts[pos]->costOfOutpost > minheap->outposts[lchild_pos]->costOfOutpost)
 				{
 					/* printf("(index = %d, pos = %d)<-swap->(index = %d, pos = %d)\n", minheap->outposts[pos]->index, minheap->positions[minheap->outposts[pos]->index], minheap->outposts[lchild_pos]->index, minheap->positions[minheap->outposts[lchild_pos]->index]); */
@@ -235,20 +255,11 @@ void bottomUpBuildMinHeap(MinHeap *minheap)
 					/* printf("(index = %d, pos = %d)<------>(index = %d, pos = %d)\n\n", minheap->outposts[pos]->index, minheap->positions[minheap->outposts[pos]->index], minheap->outposts[lchild_pos]->index, minheap->positions[minheap->outposts[lchild_pos]->index]); */
 					pos = lchild_pos;
 				}
+				else
+					break;
 			}
-		}
-		else if (lchild_pos <= last_pos)
-		{
-
-			if (minheap->outposts[pos]->costOfOutpost > minheap->outposts[lchild_pos]->costOfOutpost)
-			{
-				/* printf("(index = %d, pos = %d)<-swap->(index = %d, pos = %d)\n", minheap->outposts[pos]->index, minheap->positions[minheap->outposts[pos]->index], minheap->outposts[lchild_pos]->index, minheap->positions[minheap->outposts[lchild_pos]->index]); */
-				swap(&(minheap->outposts[pos]), &(minheap->outposts[lchild_pos]));
-				minheap->positions[minheap->outposts[pos]->index] = pos;
-				minheap->positions[minheap->outposts[lchild_pos]->index] = lchild_pos;
-				/* printf("(index = %d, pos = %d)<------>(index = %d, pos = %d)\n\n", minheap->outposts[pos]->index, minheap->positions[minheap->outposts[pos]->index], minheap->outposts[lchild_pos]->index, minheap->positions[minheap->outposts[lchild_pos]->index]); */
-				pos = lchild_pos;
-			}
+			else
+				break;
 		}
 	}
 	return;
