@@ -5,7 +5,7 @@ p# UVaOnlineJudge
 
 > List : <br>
 >
-> > [Introduction](https://github.com/Lyc1103/UVaOnlineJudge#introduction) <br> [How To Execute](https://github.com/Lyc1103/UVaOnlineJudge#how-to-executive)
+> > [Introduction](https://github.com/Lyc1103/UVaOnlineJudge#introduction) <br> [How To Execute](https://github.com/Lyc1103/UVaOnlineJudge#how-to-execute)
 
 ## Introduction
 
