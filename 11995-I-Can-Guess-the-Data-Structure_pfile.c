@@ -1,6 +1,29 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define _DEBUG
+#undef _DEBUG
+
+#ifdef _DEBUG
+#define DEBUG 1
+#include <stdarg.h>
+static int DebugPrintf(const char *format, ...)
+{
+	va_list argPtr;
+	int count;
+
+	va_start(argPtr, format);		  /* 獲取可變引述列表 */
+	fflush(stdout);				  /* 強制重新整理輸出緩衝區 */
+	count = vfprintf(stderr, format, argPtr); /* 將資訊輸出到標準出錯劉裝置 */
+	va_end(argPtr);				  /* 可變引述列表結束 */
+}
+#else
+#define DEBUG 0
+static int DebugPrintf(const char *format, ...)
+{
+}
+#endif
+
 void swap(int *a, int *b)
 {
 	int tmp = *a;
@@ -248,7 +271,7 @@ int main()
 	{
 		fscanf(pfile_r, "%d\n", &n);
 
-		/* printf("////// n = %d\n", n); */
+		DebugPrintf("////// n = %d\n", n);
 		Stack *sta = createStack(n);
 		Queue *que = createQueue(n);
 		PriorityQueue *prique = createPriorityQueue(n);
@@ -258,7 +281,7 @@ int main()
 			fscanf(pfile_r, "%d %d", &operation, &data);
 			if (operation == 1)
 			{
-				/* printf("throw    \"%2d\" to the bag.\n", data); */
+				DebugPrintf("throw    \"%2d\" to the bag.\n", data);
 				if (is_stack)
 					pushToStack(sta, data);
 				if (is_queue)
@@ -268,7 +291,7 @@ int main()
 			}
 			else
 			{
-				/* printf("take out \"%2d\" from the bag.\n", data); */
+				DebugPrintf("take out \"%2d\" from the bag.\n", data);
 				if (is_stack)
 					if (isEmptyStack(sta) || sta->data[sta->top] != data)
 						is_stack = 0;
@@ -285,21 +308,22 @@ int main()
 					else
 						dePriorityQueue(prique);
 			}
-			/*
-			if (is_stack)
-				printElementsInStack(sta);
-			else
-				puts("not stack");
-			if (is_queue)
-				printElementsInQueue(que);
-			else
-				puts("not queue");
-			if (is_prique)
-				printElementsInPriorityQueue(prique);
-			else
-				puts("not priority queue");
-			puts("");
-			*/
+			if (DEBUG)
+			{
+				if (is_stack)
+					printElementsInStack(sta);
+				else
+					puts("not stack");
+				if (is_queue)
+					printElementsInQueue(que);
+				else
+					puts("not queue");
+				if (is_prique)
+					printElementsInPriorityQueue(prique);
+				else
+					puts("not priority queue");
+				puts("");
+			}
 		}
 		freeStack(sta);
 		freeQueue(que);
