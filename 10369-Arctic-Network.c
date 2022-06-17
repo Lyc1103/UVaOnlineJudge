@@ -288,7 +288,7 @@ void freeMinHeap(MinHeap *minheap)
 }
 
 /* --------------------- */
-/* Dijkstra's Algorithm. */
+/* Prim's Algorithm. */
 /* --------------------- */
 MinHeap *initialSingleSource(Graph *graph, int start_index)
 {
